@@ -4,7 +4,7 @@ import {
   Search, Trash2, PenTool, Package, Truck, Sparkles, Ruler, AlertCircle,
   CheckCircle2, Clock, ArrowLeft, Save, FileText, Building2, RotateCcw, Printer
 } from 'lucide-react';
-
+import { supabase } from './src/supabase';
 /* ---------------------------------------------------------------------- */
 /* CONSTANTES / TEMPLATES — o "padrão" que já vem pré-preenchido           */
 /* ---------------------------------------------------------------------- */
