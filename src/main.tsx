@@ -37,15 +37,17 @@ function Sistema() {
       setCarregando(false)
     })
 
-    const { data } = supabase.auth.onAuthStateChange(async (_event, sessao) => {
-      setSession(sessao)
+    const { data } = supabase.auth.onAuthStateChange(
+      async (_event, sessao) => {
+        setSession(sessao)
 
-      if (sessao?.user) {
-        await verificarAprovacao(sessao.user.id)
-      } else {
-        setAprovado(false)
+        if (sessao?.user) {
+          await verificarAprovacao(sessao.user.id)
+        } else {
+          setAprovado(false)
+        }
       }
-    })
+    )
 
     return () => {
       data.subscription.unsubscribe()
@@ -53,6 +55,11 @@ function Sistema() {
   }, [])
 
   async function entrar() {
+    if (!email || !senha) {
+      setMensagem('Digite seu e-mail e sua senha.')
+      return
+    }
+
     setMensagem('Entrando...')
 
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -96,8 +103,24 @@ function Sistema() {
     })
 
     if (error) {
-      setMensagem(error.message)
+      setMensagem('Não foi possível criar o cadastro.')
       return
+    }
+
+    if (data.user) {
+      const { error: erroUsuario } = await supabase
+        .from('usuarios')
+        .insert({
+          id: data.user.id,
+          nome: nome,
+          email: email,
+          aprovado: false,
+        })
+
+      if (erroUsuario) {
+        setMensagem('Erro ao enviar solicitação de acesso.')
+        return
+      }
     }
 
     setMensagem(
@@ -131,8 +154,8 @@ function Sistema() {
           </h1>
 
           <p className="text-gray-600 mb-6">
-            Sua solicitação foi recebida. Assim que o acesso for aprovado, você
-            poderá entrar no sistema da MAB.
+            Sua solicitação foi recebida. Assim que seu acesso for aprovado,
+            você poderá entrar no sistema da MAB.
           </p>
 
           <button
@@ -150,7 +173,6 @@ function Sistema() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-
           <h1 className="text-3xl font-bold text-gray-900">
             MAB Embreagem
           </h1>
