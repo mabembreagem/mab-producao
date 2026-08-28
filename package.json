@@ -1,17 +1,25 @@
-​Você​
 {
+  "name": "mab-producao",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "typescript": "latest",
-    "react": "latest",
-    "react-dom": "latest",
+    "@supabase/supabase-js": "latest",
     "lucide-react": "latest",
-    "@supabase/supabase-js": "latest"
+    "react": "latest",
+    "react-dom": "latest"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@vitejs/plugin-react": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "3.4.17",
+    "typescript": "latest",
+    "vite": "latest"
+  }
 }
