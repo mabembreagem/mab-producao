@@ -103,22 +103,28 @@ function Sistema() {
     })
 
     if (error) {
+      console.error(error)
       setMensagem('Não foi possível criar o cadastro.')
       return
     }
 
     if (data.user) {
-      const { error: erroUsuario } = await supabase
-        .from('usuarios')
-        .insert({
-          id: data.user.id,
-          nome: nome,
-          email: email,
-          aprovado: false,
-        })
+      const { error: erroEmail } = await supabase.functions.invoke(
+        'solicitar-aprovacao',
+        {
+          body: {
+            nome,
+            email,
+            userId: data.user.id,
+          },
+        }
+      )
 
-      if (erroUsuario) {
-        setMensagem('Erro ao enviar solicitação de acesso.')
+      if (erroEmail) {
+        console.error(erroEmail)
+        setMensagem(
+          'Cadastro criado, mas houve um erro ao enviar o pedido de aprovação.'
+        )
         return
       }
     }
