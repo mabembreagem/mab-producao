@@ -69,15 +69,37 @@ const sugerirNumeroOP = (codigo) => {
 
 async function loadKey(key, fallback) {
   try {
-    const res = await window.storage.get(key, false);
-    return res ? JSON.parse(res.value) : fallback;
+    const { data, error } = await supabase
+      .from('codigo_ficha')
+      .select('dados')
+      .eq('id', key)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data?.dados ?? fallback;
   } catch (e) {
+    console.error('Erro ao carregar', key, e);
     return fallback;
   }
 }
+
 async function saveKey(key, value) {
   try {
-    await window.storage.set(key, JSON.stringify(value), false);
+    const { error } = await supabase
+      .from('codigo_ficha')
+      .upsert(
+        {
+          id: key,
+          codigo_ficha: key,
+          dados: value
+        },
+        {
+          onConflict: 'id'
+        }
+      );
+
+    if (error) throw error;
   } catch (e) {
     console.error('Erro ao salvar', key, e);
   }
